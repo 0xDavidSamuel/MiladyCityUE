@@ -1,3 +1,4 @@
+cat > src/components/Experience.jsx << 'EOF'
 import { OrbitControls, Environment } from '@react-three/drei'
 import PlayerCanvas from './PlayerCanvas'
 
