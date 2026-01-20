@@ -1,5 +1,5 @@
 import { OrbitControls, Environment } from '@react-three/drei'
-import AvatarCanvas from './AvatarCanvas'
+import PlayerCanvas from './PlayerCanvas'
 
 export default function Experience() {
   return (
@@ -14,7 +14,7 @@ export default function Experience() {
       <Environment preset="studio" />
       <ambientLight intensity={0.5} />
       <directionalLight position={[5, 5, 5]} intensity={1} />
-      <AvatarCanvas />
+      <PlayerCanvas />
     </>
   )
 }
