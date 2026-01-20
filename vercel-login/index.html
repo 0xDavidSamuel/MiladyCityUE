@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MiladyCity Login</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@web3auth/modal@7.0.0/dist/modal.umd.min.js"></script>
+</head>
+<body class="bg-gray-900 min-h-screen flex items-center justify-center">
+  <div class="bg-gray-800 p-8 rounded-xl shadow-lg max-w-md w-full">
+    <h1 class="text-2xl font-bold text-white text-center mb-6">MiladyCity</h1>
+    <p class="text-gray-400 text-center mb-8">Connect to continue</p>
+    
+    <div id="buttons" class="flex flex-col gap-4">
+      <button onclick="login('google')" class="w-full py-3 px-4 bg-white text-gray-900 rounded-lg font-medium hover:bg-gray-100">
+        Continue with Google
+      </button>
+      <button onclick="login('apple')" class="w-full py-3 px-4 bg-black text-white border border-gray-600 rounded-lg font-medium hover:bg-gray-900">
+        Continue with Apple
+      </button>
+      <button onclick="login('email_passwordless')" class="w-full py-3 px-4 bg-gray-700 text-white rounded-lg font-medium hover:bg-gray-600">
+        Continue with Email
+      </button>
+    </div>
+    
+    <div id="status" class="hidden text-center mt-6">
+      <p class="text-white">Connecting...</p>
+    </div>
+  </div>
+
+  <script>
+    const CLIENT_ID = 'BF2EVKFTFs7vxgCdWBSZ_5hyt61jR_YBtSrBcUji7qX145r3s3b7TvNGXzlgnqYzC73aoOlrJxe-NwyzYEWktx0';
+    
+    const web3auth = new window.Modal.Web3Auth({
+      clientId: CLIENT_ID,
+      chainConfig: {
+        chainNamespace: 'eip155',
+        chainId: '0x1',
+        rpcTarget: 'https://rpc.ankr.com/eth'
+      }
+    });
+
+    async function init() {
+      await web3auth.initModal();
+    }
+
+    async function login(method) {
+      document.getElementById('buttons').classList.add('hidden');
+      document.getElementById('status').classList.remove('hidden');
+      
+      try {
+        const provider = await web3auth.connect();
+        const accounts = await provider.request({ method: 'eth_accounts' });
+        const wallet = accounts[0];
+        
+        const params = new URLSearchParams(window.location.search);
+        const redirectUri = params.get('redirect_uri');
+        
+        if (redirectUri) {
+          window.location.href = `${redirectUri}?wallet=${wallet}`;
+        } else {
+          window.location.href = `miladycity://auth?wallet=${wallet}`;
+        }
+      } catch (err) {
+        console.error(err);
+        document.getElementById('buttons').classList.remove('hidden');
+        document.getElementById('status').classList.add('hidden');
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>
